@@ -16,6 +16,7 @@ FROM docker-registry.default.svc:5000/edp-cicd-delivery/jenkins:2.176.3
 ENV HELM_VERSION="v2.15.1"
 COPY plugins.txt /opt/openshift/configuration/plugins.txt
 USER root
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN wget -q https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/bin/helm \
     && chmod +x /usr/bin/helm \
     && rm -rf linux-amd64
