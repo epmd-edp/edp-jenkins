@@ -13,7 +13,7 @@
 # limitations under the License.
 
 FROM docker-registry.default.svc:5000/edp-cicd-delivery/jenkins:2.176.3
-ENV HELM_VERSION="v2.15.1"
+ENV HELM_VERSION="v3.1.0"
 COPY plugins.txt /opt/openshift/configuration/plugins.txt
 USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
