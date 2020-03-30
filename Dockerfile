@@ -12,14 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM docker-registry.default.svc:5000/edp-cicd-delivery/jenkins:2.176.3
+FROM openshift/jenkins-2-centos7:v3.11
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 ENV HELM_VERSION="v3.1.0"
 COPY plugins.txt /opt/openshift/configuration/plugins.txt
+
 USER root
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN yum -y install jenkins-2.222.1-1.1
 RUN wget -q https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/bin/helm \
     && chmod +x /usr/bin/helm \
     && rm -rf linux-amd64
 RUN /usr/local/bin/install-plugins.sh /opt/openshift/configuration/plugins.txt
+
 USER jenkins
 
