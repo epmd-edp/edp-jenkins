@@ -24,6 +24,7 @@ RUN wget -q https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | t
     && chmod +x /usr/bin/helm \
     && rm -rf linux-amd64
 RUN /usr/local/bin/install-plugins.sh /opt/openshift/configuration/plugins.txt
+COPY ["plugins/sonar-gerrit.hpi", "plugins/sonar-gerrit.hpi.pinned", "/var/lib/jenkins/plugins/"]
+COPY ["plugins/sonar-gerrit.hpi", "plugins/sonar-gerrit.hpi.pinned", "/tmp/plugins/"]
 
 USER jenkins
-
