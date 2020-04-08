@@ -17,6 +17,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ENV HELM_VERSION="v3.1.0"
 COPY plugins.txt /opt/openshift/configuration/plugins.txt
+COPY ["./plugins/sonar-gerrit.hpi", "./plugins/sonar-gerrit.hpi.pinned", "/var/lib/jenkins/plugins/"]
 
 USER root
 RUN yum -y install jenkins-2.222.1-1.1
@@ -26,4 +27,3 @@ RUN wget -q https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | t
 RUN /usr/local/bin/install-plugins.sh /opt/openshift/configuration/plugins.txt
 
 USER jenkins
-
