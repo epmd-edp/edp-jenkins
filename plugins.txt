@@ -104,7 +104,7 @@ run-condition:1.2
 scm-api:2.6.3
 script-security:1.71
 sonar:2.11
-sonar-gerrit:2.3
+sonar-gerrit:2.4.3
 sse-gateway:1.22
 ssh-credentials:1.18.1
 ssh-slaves:1.31.1
