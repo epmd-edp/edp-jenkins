@@ -102,3 +102,4 @@ workflow-scm-step:2.9
 workflow-step-api:2.20
 workflow-support:3.3
 gatling:1.2.7
+gitlab-plugin:1.5.13
