@@ -128,3 +128,4 @@ workflow-step-api:2.22
 workflow-support:3.4
 gatling:1.2.7
 gitlab-plugin:1.5.13
+last-changes:2.7.9
