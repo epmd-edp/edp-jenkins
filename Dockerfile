@@ -25,5 +25,10 @@ RUN wget -q https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | t
     && rm -rf linux-amd64
 RUN /usr/local/bin/install-plugins.sh /opt/openshift/configuration/plugins.txt
 
+# Install Helm push plugin
+RUN helm plugin install https://github.com/chartmuseum/helm-push.git	
+
+RUN chmod -R 777 /home/jenkins
+
 USER jenkins
 
