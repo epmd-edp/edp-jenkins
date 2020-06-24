@@ -92,6 +92,11 @@ RUN curl https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -o - | tar 
     && chmod +x /usr/bin/helm \
     && rm -rf linux-amd64
 
+# Install Helm push plugin
+RUN helm plugin install https://github.com/chartmuseum/helm-push.git	
+
+RUN chmod -R 777 /home/jenkins
+
 USER jenkins
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["/usr/libexec/s2i/run"]
