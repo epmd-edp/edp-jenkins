@@ -19,7 +19,7 @@ ENV HELM_VERSION="v3.1.0"
 COPY plugins.txt /opt/openshift/configuration/plugins.txt
 
 USER root
-RUN yum -y install jenkins-2.222.4-1.1
+RUN yum -y install jenkins-2.235.1-1.1
 RUN wget -q https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/bin/helm \
     && chmod +x /usr/bin/helm \
     && rm -rf linux-amd64
