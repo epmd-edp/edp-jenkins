@@ -5,7 +5,7 @@
 # The image streams has to have label "role" set to "jenkins-slave".
 #
 # The Jenkins container also need permissions to access the OpenShift API to
-# list image streams. You have to run this command to allow that:
+# list image streams. You have to run this command to allow that: 
 #
 # $ oc policy add-role-to-user edit system:serviceaccount:ci:default -n ci
 #
@@ -23,33 +23,6 @@ T_PORT=${JNLP_SERVICE_NAME}_SERVICE_PORT
 JNLP_PORT=${!T_PORT}
 
 export JNLP_PORT=${JNLP_PORT:-50000}
-
-NODEJS_SLAVE=${NODEJS_SLAVE_IMAGE:-registry.redhat.io/openshift3/jenkins-agent-nodejs-8-rhel7:${JENKINS_SLAVE_IMAGE_TAG}}
-MAVEN_SLAVE=${MAVEN_SLAVE_IMAGE:-registry.redhat.io/openshift3/jenkins-agent-maven-35-rhel7:${JENKINS_SLAVE_IMAGE_TAG}}
-# if the master is running the centos image, use the centos slave images.
-if [[ `grep CentOS /etc/redhat-release` ]]; then
-  NODEJS_SLAVE=${NODEJS_SLAVE_IMAGE:-openshift/jenkins-agent-nodejs-8-centos7:${JENKINS_SLAVE_IMAGE_TAG}}
-  MAVEN_SLAVE=${MAVEN_SLAVE_IMAGE:-openshift/jenkins-agent-maven-35-centos7:${JENKINS_SLAVE_IMAGE_TAG}}
-fi
-# if the master is running the rhel image, but we are on a pre-3.11 cluster, use the non-TBR images.
-if [[ `grep Enterprise /etc/redhat-release` ]]; then
-  versions=`oc version`
-  echo "OpenShift client and server versions are ${versions}"
-  countForInPodCheck=`echo $versions | grep -o "v3" | wc -l`
-  # if 2 instance of 'v3', then we are running in a pre3.11 pod;
-  # in the 3.11 image `oc`, the server version reporting only lists kubernetes 1.11
-  if [ "${countForInPodCheck}" -eq "2" ]; then
-    NODEJS_SLAVE=${NODEJS_SLAVE_IMAGE:-registry.access.redhat.com/openshift3/jenkins-agent-nodejs-8-rhel7:${JENKINS_SLAVE_IMAGE_TAG}}
-    MAVEN_SLAVE=${MAVEN_SLAVE_IMAGE:-registry.access.redhat.com/openshift3/jenkins-agent-maven-35-rhel7:${JENKINS_SLAVE_IMAGE_TAG}}
-  fi
-  countForV311Check=`echo $versions | grep -o "v3.11" | wc -l`
-  # the very latest `oc` from origin/release-3.11 does have two v3.11 lines;
-  # reset back if the jenkins 3.11 image ever picks up this level of `oc`
-  if [ "${countForV311Check}" -eq "2" ]; then
-    NODEJS_SLAVE=${NODEJS_SLAVE_IMAGE:-registry.redhat.io/openshift3/jenkins-agent-nodejs-8-rhel7:${JENKINS_SLAVE_IMAGE_TAG}}
-    MAVEN_SLAVE=${MAVEN_SLAVE_IMAGE:-registry.redhat.io/openshift3/jenkins-agent-maven-35-rhel7:${JENKINS_SLAVE_IMAGE_TAG}}
-  fi
-fi
 
 JENKINS_SERVICE_NAME=${JENKINS_SERVICE_NAME:-JENKINS}
 JENKINS_SERVICE_NAME=`echo ${JENKINS_SERVICE_NAME} | tr '[a-z]' '[A-Z]' | tr '-' '_'`
@@ -99,70 +72,6 @@ function generate_kubernetes_config() {
     echo "
     <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud>
       <name>openshift</name>
-      <templates>
-        <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
-          <inheritFrom></inheritFrom>
-          <name>maven</name>
-          <instanceCap>2147483647</instanceCap>
-          <idleMinutes>0</idleMinutes>
-          <label>maven</label>
-          <serviceAccount>${oc_serviceaccount_name}</serviceAccount>
-          <nodeSelector></nodeSelector>
-          <volumes/>
-          <containers>
-            <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
-              <name>jnlp</name>
-              <image>${MAVEN_SLAVE}</image>
-              <privileged>false</privileged>
-              <alwaysPullImage>true</alwaysPullImage>
-              <workingDir>/tmp</workingDir>
-              <command></command>
-              <args>\${computer.jnlpmac} \${computer.name}</args>
-              <ttyEnabled>false</ttyEnabled>
-              <resourceRequestCpu></resourceRequestCpu>
-              <resourceRequestMemory></resourceRequestMemory>
-              <resourceLimitCpu></resourceLimitCpu>
-              <resourceLimitMemory></resourceLimitMemory>
-              <envVars/>
-            </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
-          </containers>
-          <envVars/>
-          <annotations/>
-          <imagePullSecrets/>
-          <nodeProperties/>
-        </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
-        <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
-          <inheritFrom></inheritFrom>
-          <name>nodejs</name>
-          <instanceCap>2147483647</instanceCap>
-          <idleMinutes>0</idleMinutes>
-          <label>nodejs</label>
-          <serviceAccount>${oc_serviceaccount_name}</serviceAccount>
-          <nodeSelector></nodeSelector>
-          <volumes/>
-          <containers>
-            <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
-              <name>jnlp</name>
-              <image>${NODEJS_SLAVE}</image>
-              <privileged>false</privileged>
-              <alwaysPullImage>true</alwaysPullImage>
-              <workingDir>/tmp</workingDir>
-              <command></command>
-              <args>\${computer.jnlpmac} \${computer.name}</args>
-              <ttyEnabled>false</ttyEnabled>
-              <resourceRequestCpu></resourceRequestCpu>
-              <resourceRequestMemory></resourceRequestMemory>
-              <resourceLimitCpu></resourceLimitCpu>
-              <resourceLimitMemory></resourceLimitMemory>
-              <envVars/>
-            </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
-          </containers>
-          <envVars/>
-          <annotations/>
-          <imagePullSecrets/>
-          <nodeProperties/>
-        </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
-      </templates>
       <serverUrl>https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT}</serverUrl>
       <skipTlsVerify>false</skipTlsVerify>
       <addMasterProxyEnvVars>true</addMasterProxyEnvVars>
