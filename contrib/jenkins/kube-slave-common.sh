@@ -71,7 +71,8 @@ function generate_kubernetes_config() {
     fi
     echo "
     <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud>
-      <name>openshift</name>      
+      <name>openshift</name>     
+      <templates></templates> 
       <serverUrl>https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT}</serverUrl>
       <skipTlsVerify>false</skipTlsVerify>
       <addMasterProxyEnvVars>true</addMasterProxyEnvVars>
