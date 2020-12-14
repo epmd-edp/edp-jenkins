@@ -75,7 +75,7 @@ jsch:0.1.55.2
 keycloak:2.3.0
 kubernetes:1.28.3
 kubernetes-client-api:4.11.1
-ldap:2.0
+ldap:1.26
 lockable-resources:2.10
 mapdb-api:1.0.9.0
 mailer:1.32.1
