@@ -86,7 +86,7 @@ RUN /usr/local/bin/install-plugins.sh /opt/openshift/base-plugins.txt && \
 
 VOLUME ["/var/lib/jenkins"]
 
-ENV HELM_VERSION="v3.2.4"
+ENV HELM_VERSION="v3.4.2"
 
 RUN curl https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -o - | tar -xzO linux-amd64/helm > /usr/bin/helm \
     && chmod +x /usr/bin/helm \
@@ -95,4 +95,3 @@ RUN curl https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -o - | tar 
 USER jenkins
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["/usr/libexec/s2i/run"]
-
